@@ -24,6 +24,8 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader && \
     npm install && npm run build
 
+RUN php artisan migrate --force
+
 # Expone el puerto que Laravel usará
 EXPOSE 8080
 
