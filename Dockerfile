@@ -29,7 +29,6 @@ RUN composer install --no-dev --optimize-autoloader && \
 RUN php artisan config:clear && php artisan config:cache
 
 # Ejecuta migraciones
-RUN php artisan migrate --force
 
 # Expone el puerto que Laravel usará
 EXPOSE 8080
