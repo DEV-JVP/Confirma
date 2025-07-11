@@ -10,30 +10,30 @@ RUN apt-get update && apt-get install -y \
 # Instala Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Instala Node.js y npm
+# Instala Node.js y npm (Vite depende de esto)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
 # Crea directorio de trabajo
 WORKDIR /var/www
 
-# Copia todos los archivos del proyecto, incluido .env
+# Copia todos los archivos del proyecto, incluido el .env
 COPY . .
 
 # Instala dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Instala dependencias JS y compila assets
+# Instala dependencias de Node y construye los assets Vite
 RUN npm install && npm run build
 
-# Opcional: cachear configuración
+# Cachea la configuración (opcional pero recomendado)
 RUN php artisan config:clear && php artisan config:cache
 
-# Ejecuta migraciones automáticas (opcional)
-RUN php artisan migrate --force
+# Opcional: migraciones automáticas (usa con precaución)
+# RUN php artisan migrate --force
 
-# Expone el puerto Laravel
+# Expone el puerto para el servidor de Laravel
 EXPOSE 8080
 
-# Comando de inicio
+# Inicia el servidor de Laravel
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
