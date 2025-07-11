@@ -17,20 +17,22 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # Crea directorio de trabajo
 WORKDIR /var/www
 
-# Copia los archivos del proyecto (incluyendo .env)
-COPY .env .env
+# Copia todos los archivos del proyecto, incluido .env
 COPY . .
 
-# Instala dependencias PHP y Node
-RUN composer install --no-dev --optimize-autoloader && \
-    npm install && npm run build
+# Instala dependencias PHP
+RUN composer install --no-dev --optimize-autoloader
 
-# Opcional: cachear configuración antes de migrar
+# Instala dependencias JS y compila assets
+RUN npm install && npm run build
+
+# Opcional: cachear configuración
 RUN php artisan config:clear && php artisan config:cache
 
-# Ejecuta migraciones
+# Ejecuta migraciones automáticas (opcional)
+RUN php artisan migrate --force
 
-# Expone el puerto que Laravel usará
+# Expone el puerto Laravel
 EXPOSE 8080
 
 # Comando de inicio
