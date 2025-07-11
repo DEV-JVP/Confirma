@@ -17,8 +17,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # Crea directorio de trabajo
 WORKDIR /var/www
 
-# Copia archivos
-COPY . .
 
 # Instala dependencias PHP y JS
 RUN composer install --no-dev --optimize-autoloader
